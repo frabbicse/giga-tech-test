@@ -17,5 +17,7 @@ namespace Models.Projects.Dtos
         [Required]
         public int ProjectTypeId { get; set; }
         public string Description { get; set; }
+
+        public IList<ProjectTaskDto> TaskDtos { get; set; }
     }
 }

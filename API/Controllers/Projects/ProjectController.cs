@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Models.Projects.Dtos;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers.Projects
@@ -25,6 +26,12 @@ namespace API.Controllers.Projects
         {
             await _projectService.CreateProejct(projectDto);
             return Ok();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ProjectDto>>> GetProjects()
+        {
+            return await _projectService.ProjectList();
         }
     }
 }

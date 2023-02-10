@@ -1,7 +1,12 @@
-﻿using Infrastructure.Common;
+﻿using AutoMapper;
+
+using Infrastructure.Common;
 using Infrastructure.IServices.IHelperService;
 using Infrastructure.IServices.IProjects;
 
+using Microsoft.EntityFrameworkCore;
+
+using Models.Auth;
 using Models.Projects;
 using Models.Projects.Dtos;
 
@@ -9,6 +14,7 @@ using Persistance;
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -20,11 +26,13 @@ namespace Infrastructure.Services.Projects
     {
         private readonly GigaTechContext _context;
         private readonly IDateFormat _dateFormat;
+        private readonly IMapper _mapper;
 
-        public TaskService(GigaTechContext context, IDateFormat dateFormat)
+        public TaskService(GigaTechContext context, IDateFormat dateFormat, IMapper mapper)
         {
             _context = context;
             _dateFormat = dateFormat;
+            _mapper = mapper;
         }
         public async Task<bool> CreateProjectTask(ProjectTaskDto taskDto)
         {
@@ -37,9 +45,9 @@ namespace Infrastructure.Services.Projects
                     StartDate = taskDto.StartDate,
                     EndDate = taskDto.EndDate,
                     StatusId = taskDto.StatusId,
-                    ProjectId= taskDto.ProjectId,
-                    PostedBy    = taskDto.PostedBy,
-                    InsertDate  = _dateFormat.Now
+                    ProjectId = taskDto.ProjectId,
+                    PostedBy = taskDto.PostedBy,
+                    InsertDate = _dateFormat.Now
                 };
 
                 _context.Tasks.Add(task);
@@ -54,9 +62,41 @@ namespace Infrastructure.Services.Projects
             }
         }
 
-        public Task<List<ProjectTaskDto>> ProjectTaskList()
+        public async Task<List<ProjectTaskDto>> ProjectTaskList(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var tasks = await _context.Tasks.Where(x => x.ProjectId == projectId).ToListAsync();
+
+                return _mapper.Map<List<ProjectTask>, List<ProjectTaskDto>>(tasks);
+            }
+            catch (Exception)
+            {
+                throw new RestException(HttpStatusCode.InternalServerError);
+            }
+        }
+
+        public async Task<bool> UpdateProjectTask(ProjectTaskDto task)
+        {
+            try
+            {
+                if (_context.Tasks.Where(x => x.Id == task.Id).Any())
+                {
+                    var taskData = _mapper.Map<ProjectTaskDto, ProjectTask>(task);
+
+                    _context.Update(taskData);
+
+                    var result = await _context.SaveChangesAsync() > 0;
+
+                    if (result) return true;
+                    return false; 
+                }
+                throw new RestException(HttpStatusCode.NotFound);
+            }
+            catch (Exception e)
+            {
+                throw new RestException(HttpStatusCode.InternalServerError, e.Message);
+            }
         }
     }
 }

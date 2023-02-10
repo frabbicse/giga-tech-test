@@ -5,6 +5,9 @@ using Models.Auth;
 using Models.Projects;
 using Models.Settings;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Reflection.Emit;
+
 namespace Persistance
 {
     public class GigaTechContext : DbContext
@@ -27,6 +30,6 @@ namespace Persistance
         public DbSet<ProjectType> ProjectTypes{ get; set; }
         public DbSet<DifficultyLevel> DifficultyLevels { get; set; }
         public DbSet<ProjectTaskStatus> TaskStatuses { get; set; }
-
+ 
     }
 }

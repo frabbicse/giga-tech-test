@@ -9,6 +9,7 @@ namespace Infrastructure.IServices.IProjects
     public interface ITaskService
     {
         Task<bool> CreateProjectTask(ProjectTaskDto task);
-        Task<List<ProjectTaskDto>> ProjectTaskList();
+        Task<bool> UpdateProjectTask(ProjectTaskDto task);
+        Task<List<ProjectTaskDto>> ProjectTaskList(int projectId);
     }
 }

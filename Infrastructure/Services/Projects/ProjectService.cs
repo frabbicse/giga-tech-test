@@ -1,7 +1,11 @@
-﻿using Infrastructure.Common;
+﻿using AutoMapper;
+
+using Infrastructure.Common;
 using Infrastructure.IServices.IHelperService;
 using Infrastructure.IServices.IProjects;
 using Infrastructure.Security;
+
+using Microsoft.EntityFrameworkCore;
 
 using Models.Projects;
 using Models.Projects.Dtos;
@@ -20,13 +24,13 @@ namespace Infrastructure.Services.Projects
     {
         private readonly GigaTechContext _context;
         private readonly IDateFormat _dateFormat;
-        private readonly IUserAccessor _userAccessor;
+        private readonly IMapper _mapper;
 
-        public ProjectService(GigaTechContext context, IDateFormat dateFormat, IUserAccessor userAccessor)
+        public ProjectService(GigaTechContext context, IDateFormat dateFormat, IMapper mapper)
         {
             _context = context;
             _dateFormat = dateFormat;
-            _userAccessor = userAccessor;
+            _mapper = mapper;
         }
         public async Task<bool> CreateProejct(ProjectDto projectDto)
         {
@@ -51,9 +55,12 @@ namespace Infrastructure.Services.Projects
             }
         }
 
-        public Task<List<ProjectDto>> ProjectList()
+        
+        public async Task<List<ProjectDto>> ProjectList()
         {
-            throw new NotImplementedException();
+            var projects = await _context.Projects.ToListAsync();
+
+            return _mapper.Map<List<Project>,List<ProjectDto>>(projects);
         }
     }
 }
