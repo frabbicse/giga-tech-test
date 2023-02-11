@@ -15,6 +15,7 @@ using Persistance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,12 +56,50 @@ namespace Infrastructure.Services.Projects
             }
         }
 
-        
+
         public async Task<List<ProjectDto>> ProjectList()
         {
             var projects = await _context.Projects.ToListAsync();
 
-            return _mapper.Map<List<Project>,List<ProjectDto>>(projects);
+            return _mapper.Map<List<Project>, List<ProjectDto>>(projects);
+        }
+
+        public async Task<bool> AddMembertoProject(ProjectMemberDto projectMember)
+        {
+            try
+            {
+
+                var r = _context.TaskMembers.Where(x => x.MemberId == projectMember.MemberId && x.ProjectId == projectMember.ProjectId).Any();
+                if (!r)
+                {
+                    var taskToMember = new ProjectMember
+                    {
+                        ProjectId = projectMember.ProjectId,
+                        MemberId = projectMember.MemberId
+                    };
+                    _context.ProjectMembers.Add(taskToMember);
+
+                }
+                else
+                {
+                    var taskToMember = new ProjectMember
+                    {
+                        Id = projectMember.Id,
+                        ProjectId = projectMember.ProjectId,
+                        MemberId = projectMember.MemberId
+                    };
+                    _context.ProjectMembers.Update(taskToMember);
+
+                }
+
+                var result = await _context.SaveChangesAsync() > 0;
+                if (result) return true;
+                return false;
+            }
+            catch (Exception e)
+            {
+                throw new RestException(HttpStatusCode.InternalServerError, "Not Inserted.");
+            }
         }
     }
 }

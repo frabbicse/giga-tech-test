@@ -10,6 +10,11 @@ namespace Infrastructure.IServices.IProjects
     {
         Task<bool> CreateProjectTask(ProjectTaskDto task);
         Task<bool> UpdateProjectTask(ProjectTaskDto task);
+        Task<bool> AddMembertoTask(TaskMemberDto taskMember);
+        Task<bool> UpdateTaskStatus(TaskMemberDto taskMember);
+        Task<bool> AddTaskDifficultyLevel(TaskMemberDto taskMember);
         Task<List<ProjectTaskDto>> ProjectTaskList(int projectId);
+
+
     }
 }

@@ -11,6 +11,8 @@ namespace Infrastructure.Common
         {
             CreateMap<Project, ProjectDto>().ReverseMap();
             CreateMap<ProjectTask, ProjectTaskDto>().ReverseMap();
+            CreateMap<ProjectMember, ProjectMemberDto>().ReverseMap();
+            CreateMap<TaskMember, TaskMemberDto>().ReverseMap();
 
         }
     }

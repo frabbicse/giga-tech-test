@@ -1,6 +1,7 @@
 ﻿using Infrastructure.IServices.IProjects;
 using Infrastructure.Services.Projects;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,6 +14,7 @@ namespace API.Controllers.Projects
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProjectTaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -39,6 +41,12 @@ namespace API.Controllers.Projects
         public async Task<ActionResult<bool>> UpdateTask(ProjectTaskDto projectTaskDto)
         {
             return await _taskService.UpdateProjectTask(projectTaskDto);
+        }
+
+        [HttpPost("add-member-task")]
+        public async Task<ActionResult<bool>> AddTaskMember(TaskMemberDto taskMemeberDto)
+        {
+            return await _taskService.AddMembertoTask(taskMemeberDto);
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Infrastructure.IServices.IProjects
     {
         Task<bool> CreateProejct(ProjectDto project);
         Task<List<ProjectDto>> ProjectList();
+        Task<bool> AddMembertoProject(ProjectMemberDto projectMemberDto);
     }
 }

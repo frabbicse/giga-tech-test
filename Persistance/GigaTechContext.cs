@@ -3,10 +3,8 @@
 using Models;
 using Models.Auth;
 using Models.Projects;
+using Models.Projects.Dtos;
 using Models.Settings;
-
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Reflection.Emit;
 
 namespace Persistance
 {
@@ -25,6 +23,8 @@ namespace Persistance
         // project related
         public DbSet<Project> Projects{ get; set; }
         public DbSet<ProjectTask> Tasks { get; set; }
+        public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<TaskMember> TaskMembers{ get; set; }
 
         //settings
         public DbSet<ProjectType> ProjectTypes{ get; set; }

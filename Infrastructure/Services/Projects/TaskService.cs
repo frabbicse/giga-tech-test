@@ -34,6 +34,52 @@ namespace Infrastructure.Services.Projects
             _dateFormat = dateFormat;
             _mapper = mapper;
         }
+
+        public async Task<bool> AddMembertoTask(TaskMemberDto taskMember)
+        {
+            try
+            {
+
+                var r =  _context.TaskMembers.Where(x => x.MemberId == taskMember.MemberId && x.TaskId == taskMember.TaskId && x.ProjectId == taskMember.ProjectId).Any();
+                if (!r)
+                {
+                    var taskToMember = new TaskMember
+                    {
+                        MemberId = taskMember.MemberId,
+                        TaskId = taskMember.TaskId,
+                        ProjectId = taskMember.ProjectId,
+                        InsertDate = _dateFormat.Now,
+                        PostedBy = taskMember.PostedBy,
+                    };
+                    _context.TaskMembers.Add(taskToMember);
+
+                }
+                else
+                {
+                    var taskToMember = new TaskMember
+                    {
+                        Id= taskMember.Id,
+                        MemberId = taskMember.MemberId,
+                        TaskId = taskMember.TaskId,
+                        ProjectId = taskMember.ProjectId,
+                        UpdateDate = _dateFormat.Now,
+                        ModifiedBy = taskMember.ModifiedBy,
+                    };
+
+                    _context.Update<TaskMember>(taskToMember);
+
+                }
+
+                var result = await _context.SaveChangesAsync() > 0;
+                if (result) return true;
+                return false;
+            }
+            catch (Exception e)
+            {
+                throw new RestException(HttpStatusCode.InternalServerError, "Not Inserted.");
+            }
+        }
+
         public async Task<bool> CreateProjectTask(ProjectTaskDto taskDto)
         {
             try
@@ -83,15 +129,14 @@ namespace Infrastructure.Services.Projects
                 if (_context.Tasks.Where(x => x.Id == task.Id).Any())
                 {
                     var taskData = _mapper.Map<ProjectTaskDto, ProjectTask>(task);
-
                     _context.Update(taskData);
 
                     var result = await _context.SaveChangesAsync() > 0;
 
                     if (result) return true;
-                    return false; 
+                    return false;
                 }
-                throw new RestException(HttpStatusCode.NotFound);
+                throw new RestException(HttpStatusCode.NotFound, "Not Found.");
             }
             catch (Exception e)
             {
