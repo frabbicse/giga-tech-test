@@ -80,6 +80,11 @@ namespace Infrastructure.Services.Projects
             }
         }
 
+        public Task<bool> AddTaskDifficultyLevel(TaskMemberDto taskMember)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> CreateProjectTask(ProjectTaskDto taskDto)
         {
             try
@@ -142,6 +147,11 @@ namespace Infrastructure.Services.Projects
             {
                 throw new RestException(HttpStatusCode.InternalServerError, e.Message);
             }
+        }
+
+        public Task<bool> UpdateTaskStatus(TaskMemberDto taskMember)
+        {
+            throw new NotImplementedException();
         }
     }
 }
