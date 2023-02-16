@@ -51,7 +51,7 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<bool>> Register (Register register)
+        public async Task<ActionResult<bool>> Register ([FromBody]Register register)
         {
             try
             {

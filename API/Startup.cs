@@ -39,6 +39,8 @@ namespace API
                 option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCors();
+
             services.AddControllers();
 
             services.AddMvc(opt =>
@@ -120,6 +122,11 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); //
             app.UseAuthentication();
 
             app.UseAuthorization();
